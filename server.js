@@ -1,4 +1,6 @@
 const express = require('express');
+const dotenv = require('dotenv');
+      dotenv.config();
 const { connectToMongoDb, disconnectFromMongoDB } = require('./src/mongodb');
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,12 +13,13 @@ app.use((req, res, next) => {
 });
 
 //app.use(express.json());
+//console.log(process.env.CLUSTERDB);
 
 app.get('/', (req, res) => {
-  res.status(200).send('Bienvenido a la API frutas');
+  res.status(200).send('Bienvenido a la API Tienda de Ropa "LA ROBER TIENDA"');
 });
 
-app.get("/frutas", async (req, res) => {
+app.get("/prendas", async (req, res) => {
   try {
     // Conexión a la base de datos
     const client = await connectToMongoDb();
@@ -24,14 +27,14 @@ app.get("/frutas", async (req, res) => {
       res.status(500).send("Error al conectarse a MongoDB");
       return;
     }
-    // Obtener la colección de frutas y convertir los documentos a un array
-    const db = client.db("frutas");
-    const frutas = await db.collection("frutitas").find().toArray();
-    res.json(frutas);
+    // Obtener la colección de prendas y convertir los documentos a un array
+    const db = client.db(process.env.CLUSTERDB);
+    const prenda = await db.collection(process.env.COLLECTIONDB).find().toArray();
+    res.json(prenda);
   } catch (error) {
     console.log(error);
     // Manejo de errores al obtener las frutas
-    res.status(500).send("Error al obtener las frutas de la base de datos");
+    res.status(500).send("Error al obtener las prendas de ropa de la base de datos");
   } finally {
     // Desconexión de la base de datos
     await disconnectFromMongoDB();
@@ -39,8 +42,11 @@ app.get("/frutas", async (req, res) => {
 });
 
 // Ruta para obtener una fruta por su ID
-app.get("/frutas/id/:id", async (req, res) => {
-  const frutaId = parseInt(req.params.id);
+app.get("/prendas/codigo/:id", async (req, res) => {
+  const prendaId = parseInt(req.params.id);
+  console.log( prendaId == NaN);
+  console.log(prendaId);
+ // if(prendaId === NaN){ return res.send('Formato Incorrecto! Coloque un numero e intente nuevamente')};
   try {
     // Conexión a la base de datos
     const client = await connectToMongoDb();
@@ -48,86 +54,80 @@ app.get("/frutas/id/:id", async (req, res) => {
       res.status(500).send("Error al conectarse a MongoDB");
       return;
     }
-    // Obtener la colección de frutas y buscar la fruta por su ID
-    const db = client.db("frutas");
-    const fruta = await db.collection("frutitas").findOne({ id: frutaId });
-    if (fruta) {
-      res.json(fruta);
+    // Obtener la colección de prenda y buscar la fruta por su ID
+    const db = client.db(process.env.CLUSTERDB);
+    const prendas = await db.collection(process.env.COLLECTIONDB).findOne({ codigo: prendaId });
+    if (prendas) {
+      res.json(prendas);
     } else {
-      res.status(404).send("Fruta no encontrada");
+      res.status(404).send("Prenda no existe");
     }
   } catch (error) {
-    // Manejo de errores al obtener la fruta
-    res.status(500).send("Error al obtener la fruta de la base de datos");
+    // Manejo de errores al obtener la prenda
+    res.status(500).send("Error al obtener la prenda de la base de datos");
   } finally {
     // Desconexión de la base de datos
     await disconnectFromMongoDB();
   }
 });
 
-app.get('/frutas/nombre/:nombre', async (req, res) => {
+app.get('/prendas/nombres/:nombre', async (req, res) => {
   const frutaQuery = req.params.nombre;
-  let frutaNombre = RegExp(frutaQuery, "i");
+  let prendaNombre = RegExp(frutaQuery.trim().toLowerCase(), "i");
   console.log(frutaQuery);
   try {
+  // Conexión a la base de datos
     const client = await connectToMongoDb();
     if (!client) {
       res.status(500).send("Error al conectarse a MongoDB");
       return;
     }
-    const db = client.db('frutas');
-    const frutas = await db.collection("frutitas").find({ nombre: frutaNombre }).toArray();
-    console.log(frutaNombre);
-    if (frutas) {
-      res.json(frutas);
+    // // Obtener la colección de prenda y buscar la fruta por su nombre
+    const db = client.db(process.env.CLUSTERDB);
+    const prendas = await db.collection(process.env.COLLECTIONDB).find({ nombre: prendaNombre }).toArray();
+    if (prendas.length > 0) {
+      res.json(prendas);
     } else {
-      res.status(404).json([
+      res.status(404).send([
         { id: "Error", descripcion: "No se encontraron coincidencias en los nombres." },
       ]);
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).send("Error al obtener la fruta por el nombre de la base de datos");
+    //console.log(error);
+    res.status(500).send("Error al obtener la prenda por el nombre de la base de datos");
   } finally {
     await disconnectFromMongoDB();
   }
 });
 
-app.get('/frutas/precio/:precio', async (req, res) => {
-  const frutaQuery = parseInt(req.params.precio);
-  //const frutaQuery = parseInt(req.params.precio);
-  // let frutasNombre = RegExp(frutaQuery,"i");
-  console.log(frutaQuery);
+app.get('/prendas/precio/:precio', async (req, res) => {
+  const prendaQuery = parseInt(req.params.precio);
   try {
-    //  let nombre = req.params.nombres.trim().toLowerCase();
+     // Conexión a la base de datos
     const client = await connectToMongoDb();
     if (!client) {
       res.status(500).send("Error al conectarse a MongoDB");
       return;
     }
-    const db = client.db('frutas');
-    const frutas = await db.collection("frutitas").find({ importe: { $gte: frutaQuery } }).toArray();//find().toArray();
-    console.log(frutaQuery);
-    //  const result = client.filter(producto => producto.nombre.toLowerCase().includes(nombre));
-    if (frutas.length > 0) {
-      res.json(frutas);
+    const db = client.db(process.env.CLUSTERDB);
+    const prendas = await db.collection(process.env.COLLECTIONDB).find({ importe: { $gte: prendaQuery } }).toArray();
+    if (prendas.length > 0) {
+      res.json(prendas);
     } else {
-      res.status(404).json([
-        { id: "Error", descripcion: "No se encontraron coincidencias en los precios." },
-      ]);
+      res.status(404).send("No se encontraron coincidencias en los precios.");
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send("Error al obtener la fruta por el precio de la base de datos");
+    res.status(500).send("Error al obtener la prenda por el precio de la base de datos");
   } finally {
     await disconnectFromMongoDB();
   }
 });
 
-app.post('/frutas', async (req, res) => {
-  const nuevaFrutas = req.body;
+app.post('/prendas', async (req, res) => {
+  const nuevaPrenda = req.body;
   try {
-    if (nuevaFrutas == undefined) {
+    if (nuevaPrenda == undefined) {
       res.status(400).send('Error en el formato de datos a crear.');
     }
     //Conexion a la base de datos;
@@ -135,38 +135,101 @@ app.post('/frutas', async (req, res) => {
     if (!client) {
       res.status(500).send('Error al conectarce a MongoDB.');
     }
-    const db = client.db('frutas');
-    const collection = db.collection('frutitas');
-    await collection.insertOne(nuevaFrutas);
-    console.log('Nueva frutas creada.')
-    res.status(201).send(nuevaFrutas);
+    const db = client.db(process.env.CLUSTERDB);
+    const collection = db.collection(process.env.COLLECTIONDB);
+    await collection.insertOne(nuevaPrenda);
+    console.log('Nueva prenda agregada con exito!.')
+    res.status(201).send(nuevaPrenda);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Error al intentar agregar una fruta");
+    res.status(500).send("Error al intentar agregar una prenda");
   } finally {
     await disconnectFromMongoDB();
   }
 });
 
-app.put('/frutas/:id', async (req, res) => {
-  const idFrutas = parseInt(req.params.id);
+app.put('/prenda/:id', async (req, res) => {
+  const idPrendas = parseInt(req.params.id);
   const nuevosDatos = req.body;
   try {
     if (!nuevosDatos) {
       res.status(400).send('Error en el formato de datos');
     }
+     // Conexión a la base de datos
     const client = await connectToMongoDb();
     if (!client) {
-      const db = client.db('frutas');
-      const collection = db.collection('frutitas');
-      await collection.updateOne({ id: idFrutas }, { $set: nuevosDatos });
-      console.log('Fruta modificada');
-      res.status(500).send('Fruta Modificada');
+      const db = client.db(process.env.CLUSTERDB);
+      const collection = db.collection(process.env.COLLECTIONDB);
+      await collection.updateOne({ codigo: idPrendas }, { $set: nuevosDatos });
+      console.log('Prenda modificada');
+      res.status(200).send('Prenda Modificada');
 
     }
   } catch (error) {
+    res.status
 
   }
 })
-app.patch('/frutas/:id', )
+app.patch('/prendas/codigo/:id', async (req , res) =>{
+  const idPrenda = parseInt(req.params.id);
+  const nuevosDatos = req.body;
+  try {
+    if (!nuevosDatos){
+      res.status(400).send("Error en el formato de datos a crear.");
+    }
+    // Conexion a la base de datos
+    const client = await connectToMongoDb();
+    if(!client){
+      res.status(500).send("Error al conectarce a la base de datos")
+    }
+    const db = client.db(process.env.CLUSTERDB);
+    const collection = db.collection(process.env.COLLECTIONDB);
+    await collection.updateOne({codigo : idPrenda},{$set : nuevosDatos});
+    console.log('Prenda modificada')
+    res.status(200).send(nuevosDatos);
+  } catch (error) {
+    res.status(500).send('Error al modifica la prenda con id');
+  } finally {
+    await disconnectFromMongoDB;
+  }
+})
+
+app.delete('/prendas/codigo/:id', async (req , res) =>{
+  const idPrenda = parseInt(req.params.id);
+  try{
+  if (!idPrenda){
+      res.status(400).send('Erro en el formato de datos a crear.');
+      return;
+    }
+    // Conexión a la base de datos
+    const client = await connectToMongoDb();
+    if(!client){
+      res.status(500).send('Error al conectarse a MongoDB');
+      return;
+    }
+    const db = client.db(process.env.CLUSTERDB);
+    const collection = db.collection(process.env.COLLECTIONDB);
+    const result = await collection.deleteOne({codigo: idPrenda})
+    if(result.deletedCount === 0){
+      res.status(400).send('No se encontro prenda con el id seleccionado')
+    } else {
+      res.status(200).send(`Prenda con el id:${idPrenda} eliminada de DB`);
+    }
+  }
+  catch(error){
+    res.status(500).send(`Error al eliminar la prenda con el id:${idPrenda} .`);
+  } finally {
+    await disconnectFromMongoDB;
+  }
+});
+// Manejo de rutas inexistentes
+app.get('*', (req ,res) =>{
+  res.send('Lo sentimos la ruta especificada no existe.')
+})
+
+// Abrir server
+
 app.listen(PORT, () => console.log(`Escuchando del puerto ${PORT}`))
+
+// Usar el comando "npm run dev" en la terminal para utilizar nodemon
+// Copyright 2023
