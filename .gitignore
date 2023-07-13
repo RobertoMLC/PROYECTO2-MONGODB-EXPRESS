@@ -1,0 +1,4 @@
+#se agrega carpeta node
+node_modules
+#se agrega variables de entorno
+.env
