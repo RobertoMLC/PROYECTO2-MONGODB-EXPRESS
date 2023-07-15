@@ -1,8 +1,8 @@
 const dotenv = require("dotenv");
-dotenv.config();
+      dotenv.config();
 const { MongoClient } =require("mongodb");
 
-const URI = process.env.MONGODB_URLSTRING;
+const URI = process.env.MONGODB_URISTRING;
 const client = new MongoClient(URI);
 
 async function connectToMongoDb(){
