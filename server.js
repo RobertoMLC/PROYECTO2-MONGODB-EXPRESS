@@ -12,9 +12,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//app.use(express.json());
-//console.log(process.env.CLUSTERDB);
-
 app.get('/', (req, res) => {
   res.status(200).send('Bienvenido a la API Tienda de Ropa "LA ROBER TIENDA"');
 });

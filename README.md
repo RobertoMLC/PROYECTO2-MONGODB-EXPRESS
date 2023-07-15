@@ -59,15 +59,18 @@ Estas utilizan distintos metodos del frameworck de Node.js llamado "Express" par
 |POST| `http://localhost:3000/prendas` | Crear la prenda (asegurarce que tengan el mismo formato y propiedades) |
 
 
+### Tecnologias aplicadas <a name="id3"></a>
+
+***Proyecto 2 MongoDB-Express*** utiliza el modulo de Node.js "express" este es requirido en la archivo principal "server.js" este mismo, es el que inicia el servidor  junto con las dependencias "dotenv" que se utiliza para poder utilizar variables de entorno ,"mongodb" utilizado para conectarce y realizar operaciones en la base de datos y "nodemon" herramineta para reiniciar el servidor al hacer un cambio, se lo utilizó para desarrollar la API.
+
+ Para inicializar el server a modo de desarrolador colocar en la terminal :
+ ```terminal
+ npm run dev
+ ```
+
+La carpeta '/src' se encuentra el archivo 'mongodb.js' en esta se encuentra las funciones desarrolladas para el manejo del servidor a la base de datos.
 
 
-
-
-
-<a name="id1"></a>
-Texto del primer apartado
-## Segundo apartado
-Texto del segundo apartado
 
 ___adffgag___
 
