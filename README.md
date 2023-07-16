@@ -24,8 +24,7 @@ Esta misma debera contener **4** variables de entorno:
 
 ## Funcionamiento <a name="id1"></a>
 
-La aplicacion esta diseñada para el control de stock,actualizacion de precios, consulta de produto, eliminacion
-de producto de alguna tienda de ropa.
+La aplicación esta diseñada para la actualización de precios, consulta de produto, eliminación de producto de alguna tienda de ropa.
 
 Los archivos brindados tienen el siguiente formato:
 
@@ -38,13 +37,13 @@ Los archivos brindados tienen el siguiente formato:
 } // Objeto JSON
 ```
 
-La API esta destinada ,por diferentes rutas y metodos de la URL a:
+La API esta destinada ,por diferentes rutas y métodos de la URL a:
 * Crear un archivo en formato JSON y guardarlo en la Base de datos
 * Leer un archivo de la Base de Datos
 * Actualizar un archivo de la Base de Datos
 * Borrar un archivo de la Base de Datos
 
-Estas utilizan distintos metodos del framework de Node.js llamado "Express" para realizar las peticiones.
+Estas utilizan distintos métodos del framework de Node.js llamado "Express" para realizar las peticiones.
 
 ### CRUD<a name="id2"></a>
 
