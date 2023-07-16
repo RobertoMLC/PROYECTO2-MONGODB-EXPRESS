@@ -89,6 +89,6 @@ graph TD;
 
 Vease [MongoDb](https://www.mongodb.com/) con su GUI [Compass](https://www.mongodb.com/docs/compass/current/?_ga=2.103110848.1790828399.1689402529-1252052443.1687957659) documentación oficial.
 
-Vease [Node.js](https://nodejs.org/en/docs) con su adm. de dependecias y paquetes [npm](#https://docs.npmjs.com/).
+Vease [Node.js](https://nodejs.org/en/docs) con su adm. de dependecias y paquetes [npm](https://docs.npmjs.com/).
 
 Vease [Express](https://expressjs.com/) ,[dotenv](https://www.npmjs.com/package/dotenv) ,[mongodb](https://www.npmjs.com/package/mongodb) paquetes de ***npm***.
